@@ -135,6 +135,7 @@ function GitHubStarsButton({
   );
 
   if (isLoading) return null;
+  if (stars === 0) return null;
 
   return (
     <motion.a

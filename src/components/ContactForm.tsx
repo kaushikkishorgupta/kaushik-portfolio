@@ -13,6 +13,7 @@ import { z } from "zod";
 const formSchema = z.object({
   fullName: z.string().min(2, "Full name must be at least 2 characters"),
   email: z.string().email("Please enter a valid email address"),
+  subject: z.string().min(2, "Subject must be at least 2 characters"),
   message: z.string().min(10, "Message must be at least 10 characters"),
 });
 
@@ -21,6 +22,7 @@ type FieldErrors = Partial<Record<keyof z.infer<typeof formSchema>, string>>;
 const ContactForm = () => {
   const [fullName, setFullName] = React.useState("");
   const [email, setEmail] = React.useState("");
+  const [subject, setSubject] = React.useState("");
   const [message, setMessage] = React.useState("");
   const [loading, setLoading] = React.useState(false);
   const [errors, setErrors] = React.useState<FieldErrors>({});
@@ -32,7 +34,7 @@ const ContactForm = () => {
     e.preventDefault();
     setErrors({});
 
-    const result = formSchema.safeParse({ fullName, email, message });
+    const result = formSchema.safeParse({ fullName, email, subject, message });
     if (!result.success) {
       const fieldErrors: FieldErrors = {};
       result.error.issues.forEach((issue) => {
@@ -48,7 +50,7 @@ const ContactForm = () => {
       const res = await fetch("/api/send", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ fullName, email, message }),
+        body: JSON.stringify({ fullName, email, subject, message }),
       });
       if (!res.ok) {
         const data = await res.json();
@@ -63,6 +65,7 @@ const ContactForm = () => {
       setLoading(false);
       setFullName("");
       setEmail("");
+      setSubject("");
       setMessage("");
       const timer = setTimeout(() => {
         router.push("/");
@@ -84,7 +87,7 @@ const ContactForm = () => {
     <form className="min-w-7xl mx-auto sm:mt-4" onSubmit={handleSubmit} aria-busy={loading}>
       <div className="flex flex-col md:flex-row space-y-2 md:space-y-0 md:space-x-2 mb-4">
         <LabelInputContainer>
-          <Label htmlFor="fullname">Full name</Label>
+          <Label htmlFor="fullname">Name</Label>
           <Input
             id="fullname"
             placeholder="Your Name"
@@ -107,9 +110,20 @@ const ContactForm = () => {
         </LabelInputContainer>
       </div>
       <div className="grid w-full gap-1.5 mb-4">
-        <Label htmlFor="content">Your Message</Label>
+        <Label htmlFor="subject">Subject</Label>
+        <Input
+          id="subject"
+          placeholder="What is this about?"
+          type="text"
+          value={subject}
+          onChange={(e) => { setSubject(e.target.value); setErrors((p) => ({ ...p, subject: undefined })); }}
+        />
+        {errors.subject && <p className="text-sm text-red-500">{errors.subject}</p>}
+      </div>
+      <div className="grid w-full gap-1.5 mb-4">
+        <Label htmlFor="content">Message</Label>
         <Textarea
-          placeholder="Tell me about about your project,"
+          placeholder="Tell me about your project or opportunity,"
           id="content"
           value={message}
           onChange={(e) => { setMessage(e.target.value); setErrors((p) => ({ ...p, message: undefined })); }}

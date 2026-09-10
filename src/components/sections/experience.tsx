@@ -1,4 +1,4 @@
-import { EXPERIENCE, SkillNames, SKILLS } from "@/data/constants";
+import { EDUCATION, SkillNames, SKILLS } from "@/data/constants";
 import { SectionHeader } from "./section-header";
 import { Badge } from "../ui/badge";
 import { cn } from "@/lib/utils";
@@ -14,8 +14,8 @@ const ExperienceSection = () => {
       <div className="w-full max-w-4xl px-4 md:px-8 mx-auto">
         <SectionHeader
           id="experience"
-          title="Experience"
-          desc="My professional journey."
+          title="Education Background"
+          desc="My academic journey."
           className="mb-12 md:mb-20 mt-0"
         />
 
@@ -23,9 +23,9 @@ const ExperienceSection = () => {
           {/* Connector Line - simplified to a subtle border */}
           <div className="absolute left-8 md:left-1/2 top-4 bottom-4 w-px bg-border hidden md:block -translate-x-1/2" />
 
-          {EXPERIENCE.map((exp, index) => (
-            <div key={exp.id} className="relative">
-              <ExperienceCard experience={exp} index={index} />
+          {EDUCATION.map((edu, index) => (
+            <div key={edu.id} className="relative">
+              <EducationCard education={edu} index={index} />
             </div>
           ))}
         </div>
@@ -34,11 +34,11 @@ const ExperienceSection = () => {
   );
 };
 
-const ExperienceCard = ({
-  experience,
+const EducationCard = ({
+  education,
   index,
 }: {
-  experience: (typeof EXPERIENCE)[0];
+  education: (typeof EDUCATION)[0];
   index: number;
 }) => {
   return (
@@ -63,43 +63,46 @@ const ExperienceCard = ({
           <div className="flex flex-col md:flex-row md:items-start justify-between gap-4">
             <div className="space-y-1">
               <CardTitle className="text-xl font-bold tracking-tight">
-                {experience.title}
+                {education.title}
               </CardTitle>
               <div className="text-base font-medium text-muted-foreground">
-                {experience.company}
+                {education.institution}
+              </div>
+              <div className="text-sm text-muted-foreground">
+                {education.board}
               </div>
             </div>
             <Badge variant="secondary" className="w-fit font-mono text-xs font-normal">
-              {experience.startDate} - {experience.endDate}
+              {education.startDate} — {education.endDate}
             </Badge>
           </div>
         </CardHeader>
         <CardContent className="space-y-6">
-          <ul className="list-disc list-outside ml-4 space-y-2 text-base text-muted-foreground leading-relaxed">
-            {experience.description.map((point, i) => (
-              <li key={i}>{point}</li>
-            ))}
-          </ul>
+          <p className="text-base text-muted-foreground leading-relaxed">
+            {education.description}
+          </p>
 
-          <div className="flex flex-wrap gap-2">
-            {experience.skills.map((skillName) => {
-              const skill = SKILLS[skillName as SkillNames];
-              return (
-                <Badge
-                  key={skillName}
-                  variant="outline"
-                  className="gap-2 text-xs font-normal bg-secondary/30 hover:bg-secondary/50 transition-colors border-transparent"
-                >
-                  <img
-                    src={skill.icon}
-                    alt={skill.label}
-                    className="w-3.5 h-3.5 object-contain opacity-80"
-                  />
-                  {skill.label}
-                </Badge>
-              );
-            })}
-          </div>
+          {education.skills.length > 0 && (
+            <div className="flex flex-wrap gap-2">
+              {education.skills.map((skillName) => {
+                const skill = SKILLS[skillName as SkillNames];
+                return (
+                  <Badge
+                    key={skillName}
+                    variant="outline"
+                    className="gap-2 text-xs font-normal bg-secondary/30 hover:bg-secondary/50 transition-colors border-transparent"
+                  >
+                    <img
+                      src={skill.icon}
+                      alt={skill.label}
+                      className="w-3.5 h-3.5 object-contain opacity-80"
+                    />
+                    {skill.label}
+                  </Badge>
+                );
+              })}
+            </div>
+          )}
         </CardContent>
       </Card>
     </motion.div>

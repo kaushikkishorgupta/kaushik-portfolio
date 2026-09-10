@@ -1,9 +1,13 @@
 "use client";
 
 import { usePathname } from "next/navigation";
+import dynamic from "next/dynamic";
 import Header from "@/components/header/header";
-import Footer from "@/components/footer/footer";
 import AppOverlays from "@/components/app-overlays";
+
+const Footer = dynamic(() => import("@/components/footer/footer"), {
+  ssr: false,
+});
 
 /**
  * Wraps the app shell. The `/components*` showcase routes are rendered
