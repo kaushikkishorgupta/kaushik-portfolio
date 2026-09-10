@@ -1,14 +1,13 @@
 "use server";
 
-import { cacheLife } from "next/cache";
+
 import { config } from "@/data/config";
 
 // unauthenticated github api = 60 req/hr per ip; 5min cache -> ~12 req/hr
 // returns 0 on failure so the button can hide gracefully
 export async function getGithubStars(): Promise<number> {
-  "use cache";
-  cacheLife({ stale: 300, revalidate: 300 });
-
+  // unauthenticated GitHub API = 60 req/hr per IP
+// returns 0 on failure so the button can hide gracefully
   try {
     const res = await fetch(
       `https://api.github.com/repos/${config.githubUsername}/${config.githubRepo}`,
